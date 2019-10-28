@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <pthread.h>
 
+
 void joga(int id){
-    printf("To jogando. %d\n", id);
+    int teste = 100;
+    teste = teste - id;
+    printf("To jogando. %d\n", teste);
 }

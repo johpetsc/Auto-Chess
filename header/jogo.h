@@ -3,6 +3,6 @@
 #ifndef JOGO_H_INCLUDED
 #define JOGO_H_INCLUDED
 
-int inicializa(int jogadores, int hp);
+int inicializaJogo(int jogadores, int hp);
 
 #endif

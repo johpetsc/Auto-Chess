@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "jogador.h"
+#include "../header/jogador.h"
 
 void *chamaJogador(void *args){
     int id = *((int *)args);
