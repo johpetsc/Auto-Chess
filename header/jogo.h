@@ -3,6 +3,10 @@
 #ifndef JOGO_H_INCLUDED
 #define JOGO_H_INCLUDED
 
-int inicializaJogo(int jogadores, int hp);
+void *chamaJogador(void *args);
+void *chamaTabuleiro(void *args);
+void setPool();
+int inicializaJogo();
+
 
 #endif

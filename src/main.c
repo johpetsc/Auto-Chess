@@ -5,12 +5,10 @@
 
 #include "../header/jogo.h"
 
-#define JOGADORES 8
-#define HP 100
 
 int main(){
 
-    inicializaJogo(JOGADORES, HP);
+    inicializaJogo();
     
     return 0;
 }
