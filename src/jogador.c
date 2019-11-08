@@ -26,10 +26,12 @@ void joga(int id){
         if (tabuleiro == 1) {
             battle_ids[0] = id+1;
         }
+
         if (tabuleiro == 2) {
             battle_ids[1] = id+1;
             pthread_cond_signal(&cond_full);
         }
         pthread_mutex_unlock(&mutex_tabuleiro);
+
     }
 }

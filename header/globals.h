@@ -24,6 +24,8 @@ pthread_mutex_t mutex_tabuleiro;
 pthread_cond_t cond_full;
 pthread_cond_t cond_empty;
 
+
+
 int tabuleiro;
 int battle_ids[2];
 

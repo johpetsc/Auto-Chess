@@ -5,7 +5,6 @@
 void gerenciador_round() {
     int round = 1;
     while(jogadores_vivos != 1){
-
         printf("[Jogo] ROUND %d\n", round);
         gerenciador_tabuleiro();
         round += 1;
@@ -44,6 +43,7 @@ void *gerenciador_geral() {
     cria_pool();
 
     pthread_mutex_init(&mutexPool, NULL);
+    pthread_mutex_init(&mutex_tabuleiro, NULL);
     pthread_cond_init(&cond_full, 0);
     pthread_cond_init(&cond_empty, 0);
 
