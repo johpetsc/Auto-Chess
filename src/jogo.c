@@ -1,93 +1,75 @@
 /*Modulo responsavel por gerenciar a execucao do jogo. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include "../header/jogador.h"
+#include "../header/jogo.h"
 
-static int poolDeCampeoes[20];
-static int poolJogador[JOGADORES][5];
-static int stage = 0;
-pthread_mutex_t mutexPool;
+void gerenciador_round() {
+    int round = 1;
+    while(jogadores_vivos != 1){
 
-void *chamaJogador(void *args){
-    int id = *((int *)args);
-    while(1){
-        joga(id, poolJogador);
-        sleep(1);
+        printf("[Jogo] ROUND %d\n", round);
+        gerenciador_tabuleiro();
+        round += 1;
     }
 }
 
-void *chamaTabuleiro(void *args){
-    int id = *((int *)args);
-    while(1){
-        tabuleiro(id);
-    }
-}
-
-void *criaOfertas(void *args){
-    int id = *((int *)args);
-    while(1){
-        pthread_mutex_lock(&mutexPool);
-        for(int j=0; j<5; j++){
-            if(stage == 0)
-                poolJogador[id][j] = rand()%8;
-            else if(stage == 1)
-                poolJogador[id][j] = rand()%14;
-            else if(stage == 2)
-                poolJogador[id][j] = rand()%18;
-            else
-                poolJogador[id][j] = rand()%20;
-            if(!poolDeCampeoes[poolJogador[id][j]])
-                j--;
-            else
-                poolDeCampeoes[poolJogador[id][j]]--;
+void gerenciador_tabuleiro() {
+    int jogados = 0;
+    while(jogados != jogadores_vivos){
+        pthread_mutex_lock(&mutex_tabuleiro);
+        if (tabuleiro < 2) {
+            pthread_cond_wait(&cond_full, &mutex_tabuleiro);
+        } else {
+            printf("[Jogo] Jogadores %d e %d estao batalhando na arena\n", battle_ids[0], battle_ids[1]);
+            sleep(2);
+            int id_ganhador, id_perdedor;
+            ganhador(battle_ids[0], battle_ids[1], &id_ganhador, &id_perdedor);
+            int dano_amt = dano_perdedor(battle_ids[0], battle_ids[1]);
+            printf("[Jogo] Jogador %d Ganhou e Jogador %d perdeu %d de vida\n", id_ganhador, id_perdedor, dano_amt);
+            sleep(2);
+            tabuleiro = 0;
+            jogados += 2;
+            pthread_cond_signal(&cond_empty);
         }
-        pthread_mutex_lock(&mutexPool);
+        pthread_mutex_unlock(&mutex_tabuleiro);
     }
 }
 
-void setPool(){
-    int tier1 = 39;
-    int tier2 = 21;
-    int tier3 = 13;
-    int tier4 = 10;
+void *gerenciador_geral() {
 
-    for(int i=0; i<20; i++){
-        if(i<8)
-            poolDeCampeoes[i] = tier1;
-        else if(i<14)
-            poolDeCampeoes[i] = tier2;
-        else if(i<18)
-            poolDeCampeoes[i] = tier3;
-        else
-            poolDeCampeoes[i] = tier4;
-    }
-}
-
-int inicializaJogo(){
-    pthread_t jogadores[JOGADORES];
-    pthread_t tabuleiros[JOGADORES];
-    pthread_t ofertas[JOGADORES];
     int *id;
+    pthread_t jogadores[JOGADORES];
+    pthread_t vendedores[JOGADORES];
 
-    setHP(HP);
-    setPool();
+    conf_hp(HP);
+    cria_pool();
+
     pthread_mutex_init(&mutexPool, NULL);
+    pthread_cond_init(&cond_full, 0);
+    pthread_cond_init(&cond_empty, 0);
+
     for (int i = 0; i < JOGADORES; i++) {
         id = (int*)malloc(sizeof(int));
         *id = i;
-        pthread_create(&jogadores[i], NULL, chamaJogador, (void*)id);
-        pthread_create(&tabuleiros[i], NULL, chamaTabuleiro, (void*)id);
-        pthread_create(&ofertas[i], NULL, criaOfertas, (void*)id);
+        pthread_create(&jogadores[i], NULL, jogador, (void*)id);
+        pthread_create(&vendedores[i], NULL, vendedor, (void*)id);
     }
+
+    gerenciador_round();
 
     for (int i = 0; i < JOGADORES; i++) {
         pthread_join(jogadores[i], NULL);
-        pthread_join(tabuleiros[i], NULL);
-        pthread_join(ofertas[i], NULL);
+        pthread_join(vendedores[i], NULL);
     }
 
-    return 0;
+    pthread_exit(NULL);
+}
+
+// Inicializa um jogo em uma thread
+int inicializa_jogo(){
+    // Cria a Thread que cuidara do jogo
+    pthread_t jogo;
+    pthread_create(&jogo, NULL, gerenciador_geral, NULL);
+
+    // Espera a Thread terminar
+    pthread_join(jogo, NULL);
 }

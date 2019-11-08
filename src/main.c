@@ -7,8 +7,15 @@
 
 
 int main(){
+    // Cria Seed para funcoes rand
+    srand(time(NULL));
 
-    inicializaJogo();
-    
+    // Mostra uma msg bonitinha
+    printf("Welcome to Thread Auto-Chess!\n");
+    sleep(2);
+
+    // Comeca o jogo
+    inicializa_jogo();
+
     return 0;
 }
