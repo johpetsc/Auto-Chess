@@ -1,7 +1,6 @@
 
 #include "../header/regras.h"
 
-
 void cria_pool(){
     int tier1 = 39;
     int tier2 = 21;
@@ -20,19 +19,37 @@ void cria_pool(){
     }
 }
 
-
-void conf_hp(int hp){
+int fim_jogo(){
+    int vivos = 0;
+    int vencedor = 0;
     for(int i=0; i<JOGADORES; i++){
-        HPs[i] = hp;
+        if(HPs[i]>0){
+            vivos++;
+            vencedor = i+1;
+        }
+    }
+    if(vivos == 1){
+        return vencedor;
+    }else{
+        return 0;
+    }
+}
+void conf_hp(){
+    for(int i=0; i<JOGADORES; i++){
+        HPs[i] = HP;
     }
 }
 
+void poder_inicial(){
+    for(int i=0; i<JOGADORES; i++){
+        poderDeCombate[i] = 10;
+    }
+}
 
 int ganhador(int id1, int id2, int *id_ganhador, int *id_perdedor) {
-    int r_num = rand() % 2;
     int win = 0;
 
-    if(r_num == 0) {
+    if(poderDeCombate[id1-1]>poderDeCombate[id2-1]) {
         *id_ganhador = id1;
         *id_perdedor = id2;
     } else {
@@ -44,5 +61,7 @@ int ganhador(int id1, int id2, int *id_ganhador, int *id_perdedor) {
 }
 
 int dano_perdedor(int id1, int id2) {
-    return (rand() % 16) + 5;
+    int k = 0;
+    k = rand()%poderDeCombate[id2-1];
+    return (poderDeCombate[id1-1]-k);
 }

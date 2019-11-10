@@ -6,7 +6,9 @@
 #include "globals.h"
 
 void cria_pool();
-void conf_hp(int hp);
+void conf_hp();
+void poder_inicial();
+int fim_jogo();
 int ganhador(int id1, int id2, int *id_ganhador, int *id_perdedor);
 int dano_perdedor(int id1, int id2);
 

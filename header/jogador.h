@@ -7,6 +7,7 @@
 #include "globals.h"
 
 void *jogador(void *args);
-void joga(int id);
+int joga(int id);
+void compra(int id);
 
 #endif

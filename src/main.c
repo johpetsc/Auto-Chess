@@ -12,7 +12,7 @@ int main(){
 
     // Mostra uma msg bonitinha
     printf("Welcome to Thread Auto-Chess!\n");
-    sleep(2);
+    sleep(1);
 
     // Comeca o jogo
     inicializa_jogo();

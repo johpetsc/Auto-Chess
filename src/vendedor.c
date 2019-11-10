@@ -3,8 +3,8 @@
 void *vendedor(void *args){
     int id = *((int *)args);
     printf("[Vendedor %d] Boas Jogador %d, serei seu vendedor! \n", id+1, id+1);
-    sleep(1);
-    while(1){
+    while(fim){
+        pthread_mutex_lock(&mutex_round[id]);
         pthread_mutex_lock(&mutexPool);
         for(int j=0; j<5; j++){
             if(stage == 0)
@@ -20,6 +20,9 @@ void *vendedor(void *args){
             else
                 poolDeCampeoes[poolJogador[id][j]]--;
         }
-        pthread_mutex_lock(&mutexPool);
+        pthread_mutex_unlock(&mutexPool);
+        pthread_cond_wait(&cond_compra[id], &mutex_round[id]);
+        pthread_mutex_unlock(&mutex_round[id]);
     }
+    pthread_exit(NULL);
 }
