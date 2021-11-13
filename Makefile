@@ -1,23 +1,23 @@
 #Makefile#
 
-all: jogo clean
+all: game clean
 
-jogo: jogo.o main.o jogador.o regras.o vendedor.o
-	gcc -o jogo main.o jogador.o jogo.o regras.o vendedor.o -lpthread
+game: game.o main.o player.o rules.o seller.o
+	gcc -o game main.o player.o game.o rules.o seller.o -lpthread
 
-jogador.o: src/jogador.c
-	gcc src/jogador.c -o jogador.o -c -lpthread
+player.o: src/player.c
+	gcc src/player.c -o player.o -c -lpthread
 
-jogo.o: src/jogo.c
-	gcc src/jogo.c -o jogo.o -c -lpthread
+game.o: src/game.c
+	gcc src/game.c -o game.o -c -lpthread
 
-regras.o: src/regras.c
-	gcc src/regras.c -o regras.o -c -lpthread
+rules.o: src/rules.c
+	gcc src/rules.c -o rules.o -c -lpthread
 
-vendedor.o: src/vendedor.c
-	gcc src/vendedor.c -o vendedor.o -c -lpthread
+seller.o: src/seller.c
+	gcc src/seller.c -o seller.o -c -lpthread
 
-main.o: src/main.c header/jogo.h
+main.o: src/main.c header/game.h
 	gcc src/main.c -o main.o -c
 
 clean:
